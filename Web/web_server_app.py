@@ -11,13 +11,16 @@ def random_id(length):
 def start_screen():
     return render_template("index.html")
 
-@app.route('/start', methods=["post", "get"])
+@app.route('/config')
 def room_creator():
-    return render_template("room.html")
+    return render_template("room_config.html")
 
-@app.route('/room', methods=["post"])
+@app.route('/wait')
 def create_room():
-    room_id = random_id(5)
-    return room_id
+    return render_template("waiting_room.html")
+
+@app.route('/room')
+def room():
+    return render_template("room.html")
 
 app.run(debug=True)

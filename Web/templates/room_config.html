@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" style="height:100%">
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <meta charset="UTF-8">
+    <title>Настройка комнаты</title>
+</head>
+<body class="has-text-centered">
+    <div style="width:50%; margin: auto; margin-top:10%">
+        <form class="box" style="width:80%; margin: auto">
+            <div class="field is-horizontal">
+              <label class="label is-normal" style="margin-top: 8px; margin-right: 20px">Жанр:</label>
+              <div class="control">
+                <input class="input" type="text" placeholder="Фентези" name="genre">
+              </div>
+            </div>
+            <div class="field">
+                <label class="label">Описание мира, начало истории</label>
+                <div class="control">
+                    <textarea class="textarea" name="intro" style="resize:none"></textarea>
+                </div>
+            </div>
+            <button class="button is-primary">Создать комнату</button>
+        </form>
+    </div>
+</body>
+</html>
