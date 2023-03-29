@@ -1,6 +1,6 @@
 var socket = io("ws://localhost:3000", { transports : ['websocket'] });
 
-const room_url = "localhost:3000/room/";
+const room_url = "localhost:5000/room/";
 
 socket.on('connect', function() {
     console.log("connected");
@@ -14,25 +14,34 @@ socket.on('connect', function() {
 
 socket.on('get_message', function(sender_id, message) {
     var number = vue_app.messages_list.length;
-    vue_app.messages.push({sender: sender_id, text: message, id:number});
+    vue_app.messages_list.push({sender: sender_id, text: message, id:number});
+});
+
+socket.on('kick_event', function(reason) {
+    console.log(reason)
+    vue_app.page_id = 0;
 });
 
 socket.on('update_players_list', function(players) {
-    vue_app.players = players;
+    console.log(players);
+    vue_app.players_list = players;
 });
 
-socket.on('start_game', function() {
+socket.on('start_room', function() {
     vue_app.messages = [];
     vue_app.page_id = 3;
 });
 
-socket.on('get_room', function(id) {
+socket.on('get_room_id', function(id) {
     vue_app.room_id = id;
     vue_app.page_id = 2;
+    random_name();
+    console.log('join_to_room', id, vue_app.player_name, "");
+    socket.emit('join_to_room', id, vue_app.player_name, "");
 });
 
 socket.on('set_king', function(status) {
-    cue_app.is_main = status
+    vue_app.is_main = status
 });
 
 function copy_to_clipboard() {
@@ -69,8 +78,8 @@ function start_room() {
 
 function join_to_room(room_id) {
     random_name();
-    console.log('join_to_room', room_id, vue_app.name, "");
-    socket.emit('join_to_room', room_id, vue_app.name, "");
+    console.log('join_to_room', room_id, vue_app.player_name, "");
+    socket.emit('join_to_room', room_id, vue_app.player_name, "");
 }
 
 function change_state() {

@@ -19,7 +19,7 @@ export class RoomManager
     {
         if (id < 0 || id >= this.rooms.length) return false;
         
-        delete this.rooms[id];
+        this.rooms.splice(id, 1);
 
         return true;
     }
@@ -33,7 +33,7 @@ export class RoomManager
 
     public join_to_room(room_id: number, player: Player): boolean
     {
-        if (!(room_id < this.rooms.length || room_id > -1)) return false;
+        if (room_id > this.rooms.length || room_id < 0) return false;
         
         this.rooms[room_id].add_player(player);
 
@@ -42,7 +42,7 @@ export class RoomManager
 
     public leave_from_room(room_id: number, player_id: string): boolean
     {
-        if (!(room_id < this.rooms.length || room_id > -1)) return false;
+        if (room_id > this.rooms.length || room_id < -1) return false;
         
         this.rooms[room_id].remove_player(player_id);
 

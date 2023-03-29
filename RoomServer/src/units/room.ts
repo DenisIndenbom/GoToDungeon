@@ -37,7 +37,7 @@ export class Room
         {
             if (this.players[i].id === id) 
             {
-                delete this.players[i];
+                this.players.splice(i, 1);
                 return true;
             }
         }
@@ -78,4 +78,12 @@ export class Room
 
     public start_room()
     {this.running = true;}
+
+    public check_all_ready(): boolean
+    {
+        for (let player of this.players)
+        {if (!player.ready_state) return false;}
+        
+        return true;
+    }
 }

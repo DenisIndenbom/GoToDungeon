@@ -7,7 +7,7 @@ Vue.component('vue-wait-player', {
                 <label class="label">{{ player.name }}</label>
             </div>
             <div class="column">
-                <a class="button is-danger" v-if="!player.ready">Не готов</a>
+                <a class="button is-danger" v-if="!player.ready_state">Не готов</a>
                 <a class="button is-success" v-else>Готов</a>
                 <a class="button is-warning" v-if="is_main" @click="kick(player.id)">Выгнать</a>
             </div>
@@ -28,14 +28,12 @@ Vue.component('vue-message', {
     `
 })
 
-Vue.component()
-
 
 var vue_app = new Vue({
   el: '#app',
   data: {
-    page_id: 3,
-    players_list:[],
+    page_id: 0,
+    players_list:[{name:"Петя Иванов", id:"234567890", ready_state:false}],
     messages_list: [],
     genre: "",
     intro: "",
