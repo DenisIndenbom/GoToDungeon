@@ -1,1 +1,5 @@
 .idea
+/RoomServer/node_modules
+/RoomServer/dist
+/RoomServer/package-lock.json
+/RoomServer/package.json
