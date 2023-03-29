@@ -32,7 +32,7 @@ export class Room
     {this.players.push(player);}
 
     public remove_player(id: string) : boolean
-    {
+    {        
         for (let i = 0; i < this.players.length; i++)
         {
             if (this.players[i].id === id) 

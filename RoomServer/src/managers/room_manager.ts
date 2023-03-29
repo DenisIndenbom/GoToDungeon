@@ -17,24 +17,36 @@ export class RoomManager
 
     public remove_room(id: number) : boolean
     {
-        if (id < 0 && id >= this.rooms.length) return false;
+        if (id < 0 || id >= this.rooms.length) return false;
         
         delete this.rooms[id];
 
         return true;
     }
 
-    public get_room(id: number) : Room 
+    public get_room(id: number) : Room | null
     {
-        if (id < 0 && id >= this.rooms.length) return null;
+        if (id < 0 || id >= this.rooms.length) return null;
 
-        return this.rooms[id]
+        return this.rooms[id];
     }
 
-    public join_to_room(id: number, player: Player)
-    {this.rooms[id].add_player(player);}
+    public join_to_room(room_id: number, player: Player): boolean
+    {
+        if (!(room_id < this.rooms.length || room_id > -1)) return false;
+        
+        this.rooms[room_id].add_player(player);
 
-    public leave_from_room(room_id: number, player_id: string) 
-    {this.rooms[room_id].remove_player(player_id);}
+        return true;
+    }
+
+    public leave_from_room(room_id: number, player_id: string): boolean
+    {
+        if (!(room_id < this.rooms.length || room_id > -1)) return false;
+        
+        this.rooms[room_id].remove_player(player_id);
+
+        return true;
+    }
 
 }

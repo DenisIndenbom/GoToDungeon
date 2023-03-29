@@ -4,6 +4,7 @@ import { RoomManager } from "./managers/room_manager";
 
 import { Message } from "./units/message";
 import { Player } from "./units/player";
+import { Room } from "./units/room";
 
 const io = new Server(3000);
 const room_manager = new RoomManager();
@@ -22,8 +23,8 @@ io.on("connection", (socket) =>
 
    socket.on("create_room", (genre: string, intro: string) => 
    {
-      let id: number = room_manager.create_room(genre, intro);
-      socket.emit('get_room_id', id);
+      let room_id: number = room_manager.create_room(genre, intro);
+      socket.emit('get_room_id', room_id);
       socket.emit('set_king', true);
 
       socket.data['king'] = true;
@@ -32,8 +33,11 @@ io.on("connection", (socket) =>
    socket.on("join_to_room", (room_id: number, player_name: string, player_bio: string) => 
    {
       let player: Player = {id: socket.id, name: player_name, bio: player_bio, ready_state: false, king: false}
-      
-      room_manager.join_to_room(room_id, player);
+      let result: boolean = room_manager.join_to_room(room_id, player);
+
+      console.log(result);
+
+      if (!result) return;
 
       socket.data['room_id'] = room_id;
 
@@ -45,10 +49,9 @@ io.on("connection", (socket) =>
    socket.on("leave_room", () => 
    {
       let room_id: number = socket.data['room_id'];
-
-      if (room_id === -1) return;
-      
-      room_manager.leave_from_room(socket.data['room_id'], socket.id);
+      let result: boolean = room_manager.leave_from_room(socket.data['room_id'], socket.id);
+   
+      if (!result) return;
       
       io.to(room_id.toString()).emit('update_player_list', room_manager.get_room(room_id).get_players());
       
@@ -89,9 +92,10 @@ io.on("connection", (socket) =>
    {
       if (!socket.data['king']) return;
 
-      let room_id: number = socket.data['room_id'];
+      let room: Room | null = room_manager.get_room(socket.data['room_id']);
+      if (!room) return;
 
-      room_manager.get_room(room_id).remove_player(id);
+      room.remove_player(socket.id);
 
       socket.emit('kick_event', reason);
    });
