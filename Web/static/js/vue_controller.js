@@ -1,5 +1,5 @@
 Vue.component('vue-wait-player', {
-    props: ['player', 'is_main'],
+    props: ['player', 'is_main', 'kick'],
     template: `
     <div class = "box" style="width: 100%">
         <div class="columns is-vcentered" style="height: 15%">
@@ -9,29 +9,46 @@ Vue.component('vue-wait-player', {
             <div class="column">
                 <a class="button is-danger" v-if="!player.ready">Не готов</a>
                 <a class="button is-success" v-else>Готов</a>
-                <a class="button is-warning" v-if="is_main">Выгнать</a>
+                <a class="button is-warning" v-if="is_main" @click="kick(player.id)">Выгнать</a>
             </div>
         </div>
     </div>
     `
 })
 
+Vue.component('vue-message', {
+    props: ['message'],
+    template: `
+    <div class="box" style="width: 90%; margin:auto">
+        <div class="content">
+            <h4>{{ message.sender }}</h4>
+            <p>{{ message.text }}</p>
+        </div>
+    </div>
+    `
+})
+
+Vue.component()
+
 
 var vue_app = new Vue({
   el: '#app',
   data: {
-    page_id: 2,
+    page_id: 3,
     players_list:[],
-    messages: [],
+    messages_list: [],
     genre: "",
     intro: "",
+    ready: false,
     is_main: false,
-    room_id: ""
+    room_id: "",
+    player_name: "",
+    bio: "",
+    cur_message: ""
+  },
+  methods: {
+    kick(id) {
+        kick_player(id);
+    }
   }
 })
-
-url_last = window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
-if(url_last != "") {
-    vue_app.room_id = url_last;
-}
-console.log(vue_app.room_id);
