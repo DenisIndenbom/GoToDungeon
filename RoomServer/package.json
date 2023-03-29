@@ -2,7 +2,7 @@
   "name": "roomserver",
   "version": "1.0.0",
   "description": "This is room server for GoToDungeon",
-  "main": "index.js",
+  "main": "/dist/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
