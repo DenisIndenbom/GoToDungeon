@@ -19,7 +19,7 @@ Vue.component('vue-wait-player', {
 Vue.component('vue-message', {
     props: ['message'],
     template: `
-    <div class="box" style="width: 90%; margin:auto">
+    <div class="box" style="width: 90%; margin:auto, margin-bottom: 20px">
         <div class="content">
             <h4>{{ message.sender }}</h4>
             <p>{{ message.text }}</p>
