@@ -1,24 +1,25 @@
 import { Player } from "./player"
-import { Message } from "./message"
 
 export class Room 
 {
     private players: Array<Player>;
-    private walker_index: number;
+    private mover_index: number;
 
     public genre: string;
     public intro: string;
     public running: boolean;
-
 
     public constructor(genre: string, intro: string)
     {
         this.players = new Array<Player>();
         this.genre = genre;
         this.intro = intro;
-        this.walker_index = 0;
+        this.mover_index = 0;
         this.running = false;
     }
+
+    public start_room()
+    {this.running = true;}
 
     public get_players() : Array<Player> 
     {return this.players}
@@ -72,19 +73,19 @@ export class Room
         return false;
     }
 
-    public get_walker(): Player 
-    {return this.players[this.walker_index]}
+    public get_mover() : Player 
+    {return this.players[this.mover_index]}
 
-    public next_walker()
+    public is_mover(player: Player) : boolean 
+    {return this.get_mover() === player;}
+
+    public next_mover()
     {
-        if (this.walker_index < this.players.length) this.walker_index++;
-        else this.walker_index = 0;
+        if (this.mover_index < this.players.length) this.mover_index++;
+        else this.mover_index = 0;
     }
 
-    public start_room()
-    {this.running = true;}
-
-    public check_all_ready(): boolean
+    public check_all_ready() : boolean
     {
         for (let player of this.players)
         {if (!player.ready_state) return false;}

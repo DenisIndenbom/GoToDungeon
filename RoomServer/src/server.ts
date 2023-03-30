@@ -94,10 +94,12 @@ io.on("connection", (socket) =>
 
       let player: Player = room.get_player(socket.id);
       let message: Message = {sender_id: socket.id, sender_name: player.name, text: text};
-      
-      // room.add_message(message);
 
-      io.to(room_id.toString()).emit('get_message', player.name, text)
+      if (!room.is_mover(player)) return;
+
+      room.next_mover();
+      
+      io.to(room_id.toString()).emit('get_message', message.sender_name, message.text);
    });
 
    socket.on("kick_player", (id: string, reason: string) => 
