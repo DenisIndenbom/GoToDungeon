@@ -14,7 +14,15 @@ socket.on('connect', function() {
 
 socket.on('get_message', function(sender_id, message) {
     var number = vue_app.messages_list.length;
-    vue_app.messages_list.push({sender: sender_id, text: message, id:number});
+    var sender_name = "";
+
+    for(var i = 0; i < vue_app.players_list.length; i += 1) {
+        var player = vue_app.players_list[i];
+        console.log(sender_id, player.id);
+        if(player.id === sender_id)
+            sender_name = player.name;
+    }
+    vue_app.messages_list.push({sender: sender_name, text: message, id:number});
 });
 
 socket.on('kick_event', function(reason) {
