@@ -19,8 +19,8 @@
     "socket.io": "^4.6.1"
   },
   "devDependencies": {
-    "gulp": "^4.0.2",
-    "gulp-typescript": "^6.0.0-alpha.1",
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^2.12.2",
     "typescript": "^5.0.2"
   }
 }
