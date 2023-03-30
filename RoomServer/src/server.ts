@@ -63,7 +63,7 @@ io.on("connection", (socket) =>
       let room_id: number = socket.data['room_id']
       let room: Room = room_manager.get_room(room_id); 
 
-      if (!room.check_all_ready()) return;
+      if (!room || !room.check_all_ready()) return;
 
       room.start_room();
 
@@ -74,12 +74,13 @@ io.on("connection", (socket) =>
    {
       let room_id: number = socket.data['room_id'];
       let king: boolean = socket.data['king'];
+      let room: Room = room_manager.get_room(room_id); 
 
-      if (!room_manager.get_room(room_id).player_exists(socket.id)) return;
+      if (!room || !room.player_exists(socket.id)) return;
 
       let player: Player = {id: socket.id, name: name, bio: bio, ready_state: ready_state, king: king};
 
-      room_manager.get_room(room_id).replace_player(socket.id, player);
+      room.replace_player(socket.id, player);
 
       io.to(room_id.toString()).emit('update_players_list', room_manager.get_room(room_id).get_players());
    });
@@ -87,14 +88,16 @@ io.on("connection", (socket) =>
    socket.on("get_message", (text: string) => 
    {
       let room_id: number = socket.data['room_id'];
-      let message: Message = {sender_id: socket.id, text: text};
+      let room: Room = room_manager.get_room(room_id); 
+
+      if (!room || !room.player_exists(socket.id)) return;
+
+      let player: Player = room.get_player(socket.id);
+      let message: Message = {sender_id: socket.id, sender_name: player.name, text: text};
       
-      if (!room_manager.get_room(room_id).player_exists(socket.id)) return;
+      // room.add_message(message);
 
-      if (room_manager.get_room(room_id).player_exists(socket.id))
-      {room_manager.get_room(room_id).add_message(message);}
-
-      io.to(room_id.toString()).emit('get_message', socket.id, text)
+      io.to(room_id.toString()).emit('get_message', player.name, text)
    });
 
    socket.on("kick_player", (id: string, reason: string) => 
@@ -103,14 +106,13 @@ io.on("connection", (socket) =>
       let room_id: number = socket.data['room_id'];
       let room: Room | null = room_manager.get_room(room_id);
 
-      if (!room) return;
-      if (!room.player_exists(id)) return;
+      if (!room || !room.player_exists(id)) return;
 
       room.remove_player(id);
 
       socket.emit('kick_event', reason);
 
-      io.to(room_id.toString()).emit('update_players_list', room_manager.get_room(room_id).get_players());
+      io.to(room_id.toString()).emit('update_players_list', room.get_players());
    });
 });
 

@@ -4,7 +4,6 @@ import { Message } from "./message"
 export class Room 
 {
     private players: Array<Player>;
-    private message_history: Array<Message>;
     private walker_index: number;
 
     public genre: string;
@@ -15,7 +14,6 @@ export class Room
     public constructor(genre: string, intro: string)
     {
         this.players = new Array<Player>();
-        this.message_history = new Array<Message>();
         this.genre = genre;
         this.intro = intro;
         this.walker_index = 0;
@@ -25,8 +23,15 @@ export class Room
     public get_players() : Array<Player> 
     {return this.players}
 
-    public add_message(message: Message) 
-    {this.message_history.push(message)}
+    public get_player(id: string) : Player | null
+    {
+        for (let player of this.players) 
+        {
+            if (player.id === id) return player;
+        }
+
+        return null;
+    }
 
     public add_player(player: Player) 
     {this.players.push(player);}
