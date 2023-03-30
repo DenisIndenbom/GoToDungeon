@@ -1,3 +1,5 @@
+import {v4 as uuidv4} from 'uuid';
+
 import { Room } from "../units/room";
 import { Player } from "../units/player";
 
@@ -7,44 +9,54 @@ export class RoomManager
 
     public constructor()
     {this.rooms = new Array<Room>();}
-
-    public create_room(genre: string, intro: string) : number
+    
+    public create_room(genre: string, intro: string) : string
     {
-        this.rooms.push(new Room(genre, intro));
+        let room_id: string = uuidv4();
+        
+        this.rooms.push(new Room(room_id, genre, intro));
 
-        return this.rooms.length - 1
+        return room_id;
     }
 
-    public remove_room(id: number) : boolean
+    public remove_room(id: string) : boolean
     {
-        if (id < 0 || id >= this.rooms.length) return false;
-        
-        this.rooms.splice(id, 1);
+        for (let [i, room] of this.rooms.entries()) 
+        {
+            if (room.id === id) 
+            {
+                this.rooms.splice(i, 1);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public get_room(id: string) : Room | null
+    {
+        for (let room of this.rooms)
+        {if (room.id === id) return room;}
+
+        return null;
+    }
+
+    public join_to_room(room_id: string, player: Player): boolean
+    {   
+        let room: Room = this.get_room(room_id);
+        if (!room) return false;
+
+        room.add_player(player);
 
         return true;
     }
 
-    public get_room(id: number) : Room | null
+    public leave_from_room(room_id: string, player_id: string): boolean
     {
-        if (id < 0 || id >= this.rooms.length) return null;
+        let room: Room = this.get_room(room_id);
+        if (!room) return false;
 
-        return this.rooms[id];
-    }
-
-    public join_to_room(room_id: number, player: Player): boolean
-    {
-        if (room_id > this.rooms.length || room_id < 0) return false;
-        
-        this.rooms[room_id].add_player(player);
-
-        return true;
-    }
-
-    public leave_from_room(room_id: number, player_id: string): boolean
-    {
-        if (room_id > this.rooms.length || room_id < -1) return false;
-        
-        this.rooms[room_id].remove_player(player_id);
+        room.remove_player(player_id);
 
         return true;
     }

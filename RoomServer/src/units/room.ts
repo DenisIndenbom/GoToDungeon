@@ -5,13 +5,16 @@ export class Room
     private players: Array<Player>;
     private mover_index: number;
 
+    public id: string;
     public genre: string;
     public intro: string;
     public running: boolean;
 
-    public constructor(genre: string, intro: string)
+    public constructor(id: string, genre: string, intro: string)
     {
         this.players = new Array<Player>();
+
+        this.id = id;
         this.genre = genre;
         this.intro = intro;
         this.mover_index = 0;
@@ -20,6 +23,9 @@ export class Room
 
     public start_room()
     {this.running = true;}
+
+    public get_players_count() : number
+    {return this.players.length}
 
     public get_players() : Array<Player> 
     {return this.players}
