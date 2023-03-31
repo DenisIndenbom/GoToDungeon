@@ -48,5 +48,12 @@ var vue_app = new Vue({
     kick(id) {
         kick_player(id);
     }
-  }
+  },
+  updated() {
+  this.$nextTick(function () {
+    var block = document.getElementById("msg_block");
+    if(block)
+        block.scrollTop = block.scrollHeight;
+  })
+}
 })
