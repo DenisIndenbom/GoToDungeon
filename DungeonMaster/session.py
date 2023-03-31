@@ -1,30 +1,19 @@
-from langchain.chat_models import ChatOpenAI
-from langchain import PromptTemplate, LLMChain
-from langchain.llms import OpenAI
-from langchain.prompts.chat import (
-    ChatPromptTemplate,
-    SystemMessagePromptTemplate,
-    AIMessagePromptTemplate,
-    HumanMessagePromptTemplate,
-)
-from langchain.schema import (
-    AIMessage,
-    HumanMessage,
-    SystemMessage
-)
+from langchain import PromptTemplate
+from langchain.llms import OpenAIChat
+
 from langchain.chains import ConversationChain
-from langchain.memory import ConversationKGMemory, ConversationSummaryBufferMemory, ConversationEntityMemory, CombinedMemory
-from langchain.agents import initialize_agent, Tool
+from langchain.memory import ConversationSummaryBufferMemory, ConversationEntityMemory, CombinedMemory
 
 
 class Session:
 
     def __init__(self):
-        self.chat = ChatOpenAI(temperature=1)
+        self.llm = OpenAIChat(model_name="gpt-3.5-turbo", temperature=0.5)
         self.is_ended = False
 
-        self.know_graph_memory = ConversationEntityMemory(llm=OpenAI(), input_key="input")
-        self.summary_buffer_memory = ConversationSummaryBufferMemory(llm=self.chat, input_key="input")
+        self.know_graph_memory = ConversationEntityMemory(llm=self.llm, input_key="input")
+        self.summary_buffer_memory = ConversationSummaryBufferMemory(llm=self.llm, input_key="input", ai_prefix="",
+                                                                     human_prefix="")
         self.memory = CombinedMemory(memories=[self.know_graph_memory, self.summary_buffer_memory])
 
         _DEFAULT_TEMPLATE = """
@@ -36,6 +25,7 @@ class Session:
         Следуй заданному жанру.
         
         Не делай выбор за игроков. Когда начинается сражение передавай управление игроку.
+        Не выполняй действия за игроков.
         
         Намекай на правильное решение и дальнейший путь.
         
@@ -47,27 +37,21 @@ class Session:
         
         Оценивай возможность 
         действий игрока и выводи результат, учитывая его способности и оружее, а также контекст и прошедшие события.
+        Пиши результат действий игрока после "Результат:".
         Игрок может выполнить только одно действие за ход.
+        Если ты считаешь, что игру можно назвать оконченной, цель была достигнута, то напиши: "ИГРА ОКОНЧЕНА".
     
         {input}
         
         Результат:
 """
 
-        self.tools = [
-            Tool(
-                name="Окончание игры",
-                func=self.end_game,
-                description="Запусти эту функцию, если игру можно назвать оконченной, все поставленные цели были выполнены"
-            )
-        ]
-
         self.PROMPT = PromptTemplate(
             input_variables=["entities", "history", "input"], template=_DEFAULT_TEMPLATE
         )
 
         self.chain = ConversationChain(
-            llm=self.chat,
+            llm=self.llm,
             verbose=True,
             memory=self.memory,
             prompt=self.PROMPT
@@ -75,8 +59,6 @@ class Session:
 
     def get_using_GPT(self, input_text):
         gpt_res = self.chain.run(input_text)
+        if "ИГРА ОКОНЧЕНА" in gpt_res:
+            self.is_ended = True
         return {"text": gpt_res, "game_end": self.is_ended}
-
-    def end_game(self, query):
-        self.is_ended = True
-        return 'Игра окончена'

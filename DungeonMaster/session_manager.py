@@ -1,6 +1,10 @@
 from session import Session
 from input_templates import *
 
+import os
+
+os.environ["OPENAI_API_KEY"] = ""
+
 
 class SessionManager:
     sessions_list = {}

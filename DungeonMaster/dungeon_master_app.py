@@ -2,9 +2,6 @@ from flask import Flask, request
 from session_manager import SessionManager
 from flask_json import FlaskJSON, JsonError, json_response, as_json
 
-import os
-os.environ["OPENAI_API_KEY"] = ""
-
 app = Flask(__name__)
 FlaskJSON(app)
 
@@ -18,7 +15,7 @@ def create_session():
     genre = data['genre']
     intro = data['intro']
     players = data['players']
-    res = manager.new_session(s_id, genre, intro, players)
+    res = manager.new_session(s_id, intro, genre, players)
     return json_response(text=res['text'])
 
 
