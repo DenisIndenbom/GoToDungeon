@@ -1,5 +1,5 @@
 from langchain import PromptTemplate
-from langchain.llms import OpenAIChat
+from langchain.chat_models import ChatOpenAI
 
 from langchain.chains import ConversationChain
 from langchain.memory import ConversationSummaryBufferMemory, ConversationEntityMemory, CombinedMemory
@@ -8,7 +8,7 @@ from langchain.memory import ConversationSummaryBufferMemory, ConversationEntity
 class Session:
 
     def __init__(self):
-        self.llm = OpenAIChat(model_name="gpt-3.5-turbo", temperature=0.5)
+        self.llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.5)
         self.is_ended = False
 
         self.know_graph_memory = ConversationEntityMemory(llm=self.llm, input_key="input")
@@ -44,7 +44,7 @@ class Session:
         {input}
         
         Результат:
-"""
+    """
 
         self.PROMPT = PromptTemplate(
             input_variables=["entities", "history", "input"], template=_DEFAULT_TEMPLATE
