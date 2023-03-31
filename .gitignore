@@ -2,3 +2,4 @@
 /RoomServer/node_modules
 /RoomServer/dist
 **/__pycache__/
+**/.env

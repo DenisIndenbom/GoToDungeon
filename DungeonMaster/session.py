@@ -1,14 +1,13 @@
 from langchain import PromptTemplate
-from langchain.llms import OpenAIChat
+from langchain.chat_models import ChatOpenAI
 
 from langchain.chains import ConversationChain
 from langchain.memory import ConversationSummaryBufferMemory, ConversationEntityMemory, CombinedMemory
 
 
 class Session:
-
     def __init__(self):
-        self.llm = OpenAIChat(model_name="gpt-3.5-turbo", temperature=0.5)
+        self.llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.5)
         self.is_ended = False
 
         self.know_graph_memory = ConversationEntityMemory(llm=self.llm, input_key="input")
@@ -44,7 +43,7 @@ class Session:
         {input}
         
         Результат:
-"""
+        """
 
         self.PROMPT = PromptTemplate(
             input_variables=["entities", "history", "input"], template=_DEFAULT_TEMPLATE
@@ -52,13 +51,14 @@ class Session:
 
         self.chain = ConversationChain(
             llm=self.llm,
-            verbose=True,
+            verbose=False,
             memory=self.memory,
             prompt=self.PROMPT
         )
 
-    def get_using_GPT(self, input_text):
+    def get_using_GPT(self, input_text) -> dict:
         gpt_res = self.chain.run(input_text)
         if "ИГРА ОКОНЧЕНА" in gpt_res:
             self.is_ended = True
+
         return {"text": gpt_res, "game_end": self.is_ended}

@@ -1,19 +1,29 @@
 import { Message } from "../units/message";
 import { Player } from "../units/player";
-import { GameMessage } from "./units/game_message";
+
+type StartMessageResponse = 
+{
+    text: string
+};
+
+type GameMessage = 
+{
+    text: string,
+    game_end: string,
+};
 
 export class API 
 {
-    adrdess: string;
+    private address: string;
 
     constructor(ip: string, port: number)
     {
-        this.adrdess = `${ip}:${port}`;
+        this.address = `http://${ip}:${port}`;
     }
 
-    public create_session(id: string, genre: string, intro: string, players: Array<Player>) : Promise<string>
+    public async create_session(id: string, genre: string, intro: string, players: Array<Player>) : Promise<String> | null
     {
-        return fetch(`${this.adrdess}/session`, 
+        let result = await fetch(`${this.address}/session`, 
         {
             method: "post",
             headers: {
@@ -22,14 +32,13 @@ export class API
             },
             body: JSON.stringify({id: id, genre: genre, intro: intro, players: players}),
         })
-        .then((response: Response) : string => {
-            return response.json['text'];
-        });
+
+        return result.status === 200 ? (await result.json() as StartMessageResponse)['text'] : null;
     }
 
     public delete_session(id: string)
     {
-        fetch(`${this.adrdess}/session/${id}`, 
+        fetch(`${this.address}/session/${id}`, 
         {
             method: "delete",
             headers: {
@@ -40,9 +49,9 @@ export class API
         });
     }
 
-    public message(session_id: string, message: Message) : Promise<GameMessage>
+    public async message(session_id: string, message: Message) : Promise<GameMessage> | null
     {
-        return fetch(`${this.adrdess}/session/${session_id}`, 
+        let result = await fetch(`${this.address}/session/${session_id}/message`, 
         {
             method: "post",
             headers: {
@@ -51,8 +60,7 @@ export class API
             },
             body: JSON.stringify({sender_name: message.sender_name, text: message.text}),
         })
-        .then((response: Response) : GameMessage => {
-            return {text: response.json['text'], is_end: response.json['game_end']};
-        });
+
+        return result.status === 200 ? await result.json() as GameMessage : null;
     }
 }

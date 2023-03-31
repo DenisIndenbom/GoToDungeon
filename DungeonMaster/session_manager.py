@@ -1,23 +1,24 @@
 from session import Session
 from input_templates import *
 
-import os
-
-os.environ["OPENAI_API_KEY"] = ""
-
-
 class SessionManager:
-    sessions_list = {}
-
     def __init__(self):
-        pass
-
+        self.sessions: dict = {}
+        
+    def __session_exists(self, s_id: str) -> bool:
+        return s_id in self.sessions
+    
     def new_session(self, s_id, intro, genre, players):
-        self.sessions_list[s_id] = Session()
-        return self.sessions_list[s_id].get_using_GPT(start_template(intro, genre, players))
+        self.sessions[s_id] = Session()
 
-    def del_session(self, s_id):
-        self.sessions_list.pop(s_id, None)
+        return self.sessions[s_id].get_using_GPT(start_template(intro, genre, players))
 
-    def message(self, s_id, sender_name, text):
-        return self.sessions_list[s_id].get_using_GPT(message_template(sender_name, text))
+    def del_session(self, s_id: str) -> None:
+        if not self.__session_exists: return None
+
+        self.sessions.pop(s_id, None)
+
+    def message(self, s_id: str, sender_name: str, text: str) -> dict | None:
+        if not self.__session_exists: return None
+
+        return self.sessions[s_id].get_using_GPT(message_template(sender_name, text))
