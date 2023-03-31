@@ -43,18 +43,20 @@ export class Room
     public add_player(player: Player) 
     {this.players.push(player);}
 
-    public remove_player(id: string) : boolean
+    public remove_player(id: string) : Player | null
     {        
         for (let i = 0; i < this.players.length; i++)
         {
             if (this.players[i].id === id) 
             {
+                let clone: Player = structuredClone(this.players[i]);
                 this.players.splice(i, 1);
-                return true;
+
+                return clone;
             }
         }
         
-        return false;
+        return null;
     }
 
     public replace_player(id: string, player: Player)
@@ -77,6 +79,23 @@ export class Room
         {if (player.id === id) return true;}
         
         return false;
+    }
+
+    public get_king(): Player | null
+    {
+        for (let player of this.players) 
+        {if (player.king) return player;}
+        
+        return null;
+    }
+    
+    public set_new_king() : boolean
+    {
+        if (this.players.length === 0) return false;
+
+        this.players[0].king = true;
+
+        return true;
     }
 
     public get_mover() : Player 

@@ -1,5 +1,7 @@
 import {v4 as uuidv4} from 'uuid';
 
+import { LeaveStatus } from '../enums/leave_status';
+
 import { Room } from "../units/room";
 import { Player } from "../units/player";
 
@@ -44,21 +46,25 @@ export class RoomManager
     public join_to_room(room_id: string, player: Player): boolean
     {   
         let room: Room = this.get_room(room_id);
-        if (!room) return false;
+        if (!room || room.running) return false;
 
         room.add_player(player);
 
         return true;
     }
 
-    public leave_from_room(room_id: string, player_id: string): boolean
+    public leave_from_room(room_id: string, player_id: string): LeaveStatus
     {
         let room: Room = this.get_room(room_id);
-        if (!room) return false;
+        if (!room) return LeaveStatus.Faild;
+        
+        let player: Player = room.remove_player(player_id);
 
-        room.remove_player(player_id);
-
-        return true;
+        if (!player) return LeaveStatus.Faild;
+        
+        if (player.king) room.set_new_king();
+        
+        return (player.king) ? LeaveStatus.KingLeaved : LeaveStatus.Success;
     }
 
 }
