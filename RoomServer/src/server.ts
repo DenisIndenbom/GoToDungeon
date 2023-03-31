@@ -1,5 +1,6 @@
 import { Server, Socket } from "socket.io";
 
+import { API, GameMessage } from "./DungeonMasterAPI/api";
 import { RoomManager } from "./managers/room_manager";
 
 import { LeaveStatus } from "./enums/leave_status";
@@ -10,6 +11,7 @@ import { Room } from "./units/room";
 
 const io = new Server(3000);
 const room_manager = new RoomManager();
+const DMAPI = new API('127.0.0.1', 4000);
 
 io.on("connection", (socket) => 
 {
@@ -80,7 +82,7 @@ io.on("connection", (socket) =>
       }
    });
 
-   socket.on("start_room", () => 
+   socket.on("start_room", async () => 
    {
       if (!socket.data['king']) return;
 
@@ -91,7 +93,13 @@ io.on("connection", (socket) =>
 
       room.start_room();
 
-      io.to(room_id).emit('start_room');      
+      io.to(room_id).emit('start_room');
+      
+      let start_message: string = await DMAPI.create_session(room.id, room.genre, room.intro, room.get_players());
+
+      console.log(start_message);
+
+      io.to(room_id).emit('get_message', 'ChatGPT', start_message);
    });
 
    socket.on("update_player_info", (name: string, bio: string, ready_state: boolean) => 
@@ -109,7 +117,7 @@ io.on("connection", (socket) =>
       io.to(room_id).emit('update_players_list', room_manager.get_room(room_id).get_players());
    });
 
-   socket.on("get_message", (text: string) => 
+   socket.on("get_message", async (text: string) => 
    {
       let room_id: string = socket.data['room_id'];
       let room: Room = room_manager.get_room(room_id); 
@@ -121,9 +129,13 @@ io.on("connection", (socket) =>
 
       if (!room.is_mover(player)) return;
 
-      room.next_mover();
-      
       io.to(room_id).emit('get_message', message.sender_name, message.text);
+
+      let game_message: GameMessage = await DMAPI.message(room_id, message);
+
+      io.to(room_id).emit('get_message', 'ChatGPT', game_message.text);
+      
+      room.next_mover();
    });
 
    socket.on("kick_player", (id: string, reason: string) => 

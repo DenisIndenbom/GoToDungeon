@@ -6,7 +6,7 @@ type StartMessageResponse =
     text: string
 };
 
-type GameMessage = 
+export type GameMessage = 
 {
     text: string,
     game_end: string,
@@ -21,7 +21,7 @@ export class API
         this.address = `http://${ip}:${port}`;
     }
 
-    public async create_session(id: string, genre: string, intro: string, players: Array<Player>) : Promise<String> | null
+    public async create_session(id: string, genre: string, intro: string, players: Array<Player>) : Promise<string> | null
     {
         let result = await fetch(`${this.address}/session`, 
         {
