@@ -1,4 +1,4 @@
 .idea
 /RoomServer/node_modules
 /RoomServer/dist
-/DungeonMaster/config.py
+**/__pycache__/
