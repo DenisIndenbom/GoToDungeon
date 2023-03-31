@@ -86,10 +86,7 @@ export class Room
     {return this.get_mover() === player;}
 
     public next_mover()
-    {
-        if (this.mover_index < this.players.length) this.mover_index++;
-        else this.mover_index = 0;
-    }
+    {this.mover_index = (this.mover_index < this.players.length - 1) ? this.mover_index + 1 : 0;}
 
     public check_all_ready() : boolean
     {
