@@ -90,7 +90,7 @@
 
 
     <div v-if="page_id == 3" style="height: 100%">
-        <div class="box" style="margin:auto; height:80%; width:70%; overflow-y:auto; padding: 20px">
+        <div id="msg_block" class="box" style="margin:auto; height:80%; width:70%; overflow-y:auto; padding: 20px">
             <vue-message
                 v-for="message_ in messages_list"
                 v-bind:message="message_"
@@ -100,7 +100,7 @@
         <div style="margin:auto; width:70%; height:15%; margin-top: 20px">
             <div class="columns is-vcentered" style="height:100%">
                 <div class = "column is-11">
-                    <input id="message_input" class="input" placeholder="введите действие..." v-model="cur_message">
+                    <input id="input_msg" class="input" placeholder="введите действие..." v-model="cur_message" onkeypress="handle_key_press(event)">
                 </div>
                 <div class="column">
                     <a onclick="send_message()"><img src="/static/other/paper-plane.png" height="100%"></a>

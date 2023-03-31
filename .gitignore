@@ -1,4 +1,4 @@
 .idea
 /RoomServer/node_modules
 /RoomServer/dist
-/RoomServer/src/openai_api
+**/__pycache__/
