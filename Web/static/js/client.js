@@ -12,9 +12,9 @@ socket.on('connect', function() {
     }
 });
 
-socket.on('get_message', function(sender_id, message) {
+socket.on('get_message', function(sender_name, message) {
     var number = vue_app.messages_list.length;
-    vue_app.messages_list.push({sender: sender_id, text: message, id:number});
+    vue_app.messages_list.push({sender: sender_name, text: message, id:number});
 });
 
 socket.on('kick_event', function(reason) {
@@ -103,6 +103,8 @@ function leave_room() {
 
 function send_message() {
     text = vue_app.cur_message;
+    if(text == "")
+        return;
     vue_app.cur_message = "";
     console.log('get_message', text);
     socket.emit('get_message', text);
@@ -111,4 +113,10 @@ function send_message() {
 function kick_player(id) {
     console.log('kick_player', id);
     socket.emit('kick_player', id);
+}
+
+function handle_key_press(e) {
+    var key=e.keyCode || e.which;
+    if(key === 13)
+        send_message();
 }
