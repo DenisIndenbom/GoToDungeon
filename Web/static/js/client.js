@@ -44,6 +44,10 @@ socket.on('set_king', function(status) {
     vue_app.is_main = status
 });
 
+socket.on('set_cur', function(status) {
+    vue_app.is_turning = status;
+});
+
 function copy_to_clipboard() {
     var inputc = document.body.appendChild(document.createElement("input"));
     inputc.value =  room_url + vue_app.room_id;

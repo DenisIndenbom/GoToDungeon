@@ -42,7 +42,9 @@ var vue_app = new Vue({
     room_id: "",
     player_name: "",
     bio: "",
-    cur_message: ""
+    cur_message: "",
+    is_ended: false,
+    is_turning: false,
   },
   methods: {
     kick(id) {
