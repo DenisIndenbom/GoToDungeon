@@ -45,4 +45,4 @@ def get_message(session_id):
     return json_response(text=res['text'], game_end=res['game_end']) if res is not None else json_response(400)
 
 
-app.run(debug=True, port=4000)
+app.run(debug=False, port=4000)
