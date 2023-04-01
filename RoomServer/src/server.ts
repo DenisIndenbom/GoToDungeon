@@ -42,7 +42,6 @@ io.on("connection", (socket) =>
                let king_socket: Socket = io.sockets.sockets.get(socket_id)
                king_socket.data['king'] = true;
                king_socket.emit('set_king', true);
-               
                break;
             }
          }
@@ -142,8 +141,6 @@ io.on("connection", (socket) =>
 
       let game_message: GameMessage = await DMAPI.message(room_id, message);
 
-      console.log(game_message.game_end);
-
       if (game_message.game_end) {io.to(room_id).emit('end_game')};
 
       io.to(room_id).emit('get_message', 'ChatGPT', game_message.text);
@@ -160,7 +157,6 @@ io.on("connection", (socket) =>
          {
             let mover_socket: Socket = io.sockets.sockets.get(socket_id)
             mover_socket.emit('set_cur', true);
-            
             break;
          }
       }      
