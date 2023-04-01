@@ -32,7 +32,7 @@ Vue.component('vue-message', {
 var vue_app = new Vue({
   el: '#app',
   data: {
-    page_id: 3,
+    page_id: 0,
     players_list:[],
     messages_list: [],
     genre: "",

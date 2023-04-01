@@ -15,40 +15,7 @@ const DMAPI = new API('127.0.0.1', 4000);
 
 io.on("connection", (socket) => 
 {
-   socket.data['room_id'] = '';
-   socket.data['king'] = false;
-
-   console.log(`Connect ${socket.id}`);
-
-   socket.on("disconnect", () => 
-   {
-      console.log(`Disconnect ${socket.id}`)
-   })
-
-   socket.on("create_room", (genre: string, intro: string) => 
-   {
-      let room_id: string = room_manager.create_room(genre, intro);
-      socket.emit('get_room_id', room_id);
-      socket.emit('set_king', true);
-
-      socket.data['king'] = true;
-   });
-
-   socket.on("join_to_room", (room_id: string, player_name: string, player_bio: string) => 
-   {
-      let player: Player = {id: socket.id, name: player_name, bio: player_bio, ready_state: false, king: socket.data['king']}
-      let result: boolean = room_manager.join_to_room(room_id, player);
-
-      if (!result) return;
-
-      socket.data['room_id'] = room_id;
-
-      socket.join(room_id);
-
-      io.to(room_id).emit('update_players_list', room_manager.get_room(room_id).get_players());
-   });
-
-   socket.on("leave_room", () => 
+   function leave_event ()
    {
       let room_id: string = socket.data['room_id'];
       let result: LeaveStatus = room_manager.leave_from_room(socket.data['room_id'], socket.id);
@@ -80,7 +47,44 @@ io.on("connection", (socket) =>
             }
          }
       }
+   }
+   
+   socket.data['room_id'] = '';
+   socket.data['king'] = false;
+
+   console.log(`Connect ${socket.id}`);
+
+   socket.on("disconnect", () => 
+   {
+      console.log(`Disconnect ${socket.id}`)
+
+      leave_event();
+   })
+
+   socket.on("create_room", (genre: string, intro: string) => 
+   {
+      let room_id: string = room_manager.create_room(genre, intro);
+      socket.emit('get_room_id', room_id);
+      socket.emit('set_king', true);
+
+      socket.data['king'] = true;
    });
+
+   socket.on("join_to_room", (room_id: string, player_name: string, player_bio: string) => 
+   {
+      let player: Player = {id: socket.id, name: player_name, bio: player_bio, ready_state: false, king: socket.data['king']}
+      let result: boolean = room_manager.join_to_room(room_id, player);
+
+      if (!result) return;
+
+      socket.data['room_id'] = room_id;
+
+      socket.join(room_id);
+
+      io.to(room_id).emit('update_players_list', room_manager.get_room(room_id).get_players());
+   });
+
+   socket.on("leave_room", () => leave_event());
 
    socket.on("start_room", async () => 
    {
@@ -94,12 +98,14 @@ io.on("connection", (socket) =>
       room.start_room();
 
       io.to(room_id).emit('start_room');
+      io.to(room_id).emit('set_cur_name', 'ChatGPT');
       
       let start_message: string = await DMAPI.create_session(room.id, room.genre, room.intro, room.get_players());
 
-      console.log(start_message);
-
       io.to(room_id).emit('get_message', 'ChatGPT', start_message);
+      io.to(room_id).emit('set_cur_name', room.get_player(socket.id).name);
+
+      socket.emit('set_cur', true);
    });
 
    socket.on("update_player_info", (name: string, bio: string, ready_state: boolean) => 
@@ -129,13 +135,33 @@ io.on("connection", (socket) =>
 
       if (!room.is_mover(player)) return;
 
+      socket.emit('set_cur', false);
+
       io.to(room_id).emit('get_message', message.sender_name, message.text);
+      io.to(room_id).emit('set_cur_name', 'ChatGPT');
 
       let game_message: GameMessage = await DMAPI.message(room_id, message);
+
+      if (game_message.game_end) io.to(room_id).emit('game_end');
 
       io.to(room_id).emit('get_message', 'ChatGPT', game_message.text);
       
       room.next_mover();
+
+      let mover: Player = room.get_mover(); 
+
+      socket.emit('set_cur_name', mover.name);
+
+      for (let socket_id of Array.from(io.sockets.adapter.rooms.get(room_id)))
+      {
+         if (socket_id === mover.id) 
+         {
+            let mover_socket: Socket = io.sockets.sockets.get(socket_id)
+            mover_socket.emit('set_cur', true);
+            
+            break;
+         }
+      }      
    });
 
    socket.on("kick_player", (id: string, reason: string) => 
