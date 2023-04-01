@@ -33,7 +33,7 @@ var vue_app = new Vue({
   el: '#app',
   data: {
     page_id: 0,
-    players_list:[{name:"Петя Иванов", id:"234567890", ready_state:false}],
+    players_list:[],
     messages_list: [],
     genre: "",
     intro: "",
@@ -42,7 +42,10 @@ var vue_app = new Vue({
     room_id: "",
     player_name: "",
     bio: "",
-    cur_message: ""
+    cur_message: "",
+    is_ended: false,
+    is_turning: false,
+    cur_label_text: "Абоба",
   },
   methods: {
     kick(id) {
