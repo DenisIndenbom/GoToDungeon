@@ -35,6 +35,8 @@ class Session:
 У каждого игрока есть свой персонаж. Игроки ходят по очереди, описывая свои действия текстом. 
 Твоя задача – на каждом шаге моделировать как реагирует мир на действия игроков. Присылай в ответ реакции других персонажей и существ, а также описывай, что видят персонажи игроков. Учитывай особенности указанного жанра, особенностей персонажей и контекста. Не выполняй никаких действий и не принимай решений за игроков, только моделируй окружение.
 Пиши лаконично и интересно. Твои сюжеты должны быть вовлекающими и захватывающими. Твой ответ должен состоять менее чем из 10 предложений.
+{entities}
+{history}
 {input}
 """
 
@@ -48,6 +50,7 @@ class Session:
         self.chain = ConversationChain(
             llm=self.llm,
             verbose=False,
+            memory=self.memory,
             prompt=self.START_PROMPT
         )
 
@@ -56,7 +59,6 @@ class Session:
         if "игра окончена" in gpt_res.lower():
             self.is_ended = True
         if self.is_first:
-            self.chain.memory = self.memory
             self.chain.prompt = self.PROMPT
             self.is_first = False
         return {"text": gpt_res, "game_end": self.is_ended}
