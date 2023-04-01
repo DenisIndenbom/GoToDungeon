@@ -53,6 +53,7 @@ socket.on('set_cur_name', function(name) {
 })
 
 socket.on('end_game', function() {
+    console.log('game is end');
     document.getElementById("turn_label").innerHTML = "Игра окончена!";
     vue_app.is_turning = false;
     vue_app.is_ended = true;
