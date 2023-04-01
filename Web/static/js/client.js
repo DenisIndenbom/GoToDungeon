@@ -44,6 +44,20 @@ socket.on('set_king', function(status) {
     vue_app.is_main = status
 });
 
+socket.on('set_cur', function(status) {
+    vue_app.is_turning = status;
+});
+
+socket.on('set_name', function(name) {
+    document.getElementById("turn_label").innerHTML = "Сейчас ходит: " + name;
+})
+
+socket.on('end_game', function() {
+    document.getElementById("turn_label").innerHTML = "Игра окончена!";
+    vue_app.is_turning = false;
+    vue_app.is_ended = true;
+})
+
 function copy_to_clipboard() {
     var inputc = document.body.appendChild(document.createElement("input"));
     inputc.value =  room_url + vue_app.room_id;
