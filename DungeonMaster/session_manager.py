@@ -3,7 +3,7 @@ from input_templates import *
 
 import os
 
-os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = ""
 
 
 class SessionManager:
