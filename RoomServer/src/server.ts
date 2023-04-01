@@ -149,6 +149,12 @@ io.on("connection", (socket) =>
 
       let mover: Player = room.get_mover(); 
 
+      if (!mover) 
+      {
+         io.to(room_id).emit('end_game');
+         return;
+      }
+
       socket.emit('set_cur_name', mover.name);
 
       for (let socket_id of Array.from(io.sockets.adapter.rooms.get(room_id)))
