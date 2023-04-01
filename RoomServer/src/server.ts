@@ -142,7 +142,7 @@ io.on("connection", (socket) =>
 
       let game_message: GameMessage = await DMAPI.message(room_id, message);
 
-      if (game_message.game_end) io.to(room_id).emit('game_end');
+      if (game_message.game_end) io.to(room_id).emit('end_game');
 
       io.to(room_id).emit('get_message', 'ChatGPT', game_message.text);
       
