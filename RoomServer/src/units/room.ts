@@ -50,6 +50,10 @@ export class Room
             if (this.players[i].id === id) 
             {
                 let clone: Player = structuredClone(this.players[i]);
+
+                if (this.get_mover() === this.players[i] && 
+                    this.mover_index === this.players.length - 1) this.mover_index -= 1;
+
                 this.players.splice(i, 1);
 
                 return clone;
