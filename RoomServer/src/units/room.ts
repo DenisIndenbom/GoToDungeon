@@ -99,7 +99,7 @@ export class Room
     }
 
     public get_mover() : Player | null
-    {return (this.mover_index < this.players.length - 1) ? this.players[this.mover_index] : null}
+    {return (this.mover_index < this.players.length) ? this.players[this.mover_index] : null}
 
     public is_mover(player: Player) : boolean 
     {return this.get_mover() === player;}
