@@ -55,7 +55,7 @@ class Session:
         )
 
     def get_using_GPT(self, input_text) -> dict:
-        gpt_res = self.chain.run(input_text)
+        gpt_res = self.chain.run(input_text).lstrip(':')
 
         if "игра окончена" in gpt_res.lower():
             self.is_ended = True

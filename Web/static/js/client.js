@@ -1,6 +1,6 @@
-var socket = io("ws://10.5.10.135:3000", { transports : ['websocket'] });
+var socket = io("ws://192.168.43.238:3000", { transports : ['websocket'] });
 
-const room_url = "http://10.5.10.135:5000//room/";
+const room_url = "http://192.168.43.238:5000//room/";
 
 socket.on('connect', function() {
     console.log("connected");
@@ -53,6 +53,7 @@ socket.on('set_cur_name', function(name) {
 })
 
 socket.on('end_game', function() {
+    console.log('game is end');
     document.getElementById("turn_label").innerHTML = "Игра окончена!";
     vue_app.is_turning = false;
     vue_app.is_ended = true;
