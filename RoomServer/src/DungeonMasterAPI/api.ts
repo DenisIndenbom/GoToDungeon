@@ -12,7 +12,7 @@ export type GameMessage =
     game_end: string,
 };
 
-class ConnectionError extends Error {
+class ConnectError extends Error {
     code: string;
 
     constructor(message?: string, code?: string) {
@@ -44,7 +44,7 @@ export class API
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({text: "This is a test message!"}),
-        }).catch(error => {throw new ConnectionError(`Failed to connect to the DungeonMaster. Please check the ip or port. Used ip address: ${this.address}`, 'CONNECT_FAILED');});
+        }).catch(error => {throw new ConnectError(`Failed to connect to the DungeonMaster. Please check the ip or port. Used ip address: ${this.address}`, 'CONNECT_FAILED');});
     }
 
     public async create_session(id: string, genre: string, intro: string, players: Array<Player>) : Promise<string> | null

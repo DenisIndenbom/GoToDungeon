@@ -9,6 +9,18 @@ services:
     ports:
       - 5000:5000
 
+  dungeon_master:
+    build: ./DungeonMaster/
+
+    command: python dungeon_master_app.py
+
+    ports:
+      - 4000:4000
+
+    networks:
+      network:
+        ipv4_address: 172.25.0.11
+
   room_server:
     build: ./RoomServer/
 
@@ -18,22 +30,10 @@ services:
       - 3000:3000
 
     depends_on:
-      - web
-
-  dungeon_master:
-    build: ./DungeonMaster/
-
-    command: python dungeon_master_app.py
-
-    ports:
-      - 4000:4000
-
-    depends_on:
-      - room_server
+      - dungeon_master
 
     networks:
-      network:
-        ipv4_address: 172.25.0.11
+      - network
 
 networks:
   network:
