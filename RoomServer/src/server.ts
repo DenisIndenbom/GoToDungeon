@@ -1,4 +1,5 @@
 import { Server, Socket } from "socket.io";
+import { config } from "dotenv";
 
 import { API, GameMessage } from "./DungeonMasterAPI/api";
 import { RoomManager } from "./managers/room_manager";
@@ -9,9 +10,11 @@ import { Message } from "./units/message";
 import { Player } from "./units/player";
 import { Room } from "./units/room";
 
-const io = new Server(3000);
+const conf = config({path: '.env'})['parsed']
+
+const io = new Server(+conf['PORT']);
 const room_manager = new RoomManager();
-const DMAPI = new API('127.0.0.1', 4000);
+const DMAPI = new API(conf['DUNGEON_MASTER_IP'], +conf['DUNGEON_MASTER_PORT']);
 
 io.on("connection", (socket) => 
 {

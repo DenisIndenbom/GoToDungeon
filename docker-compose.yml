@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  web:
+    build: ./Web/
+
+    command: python web_server_app.py
+
+    ports:
+      - 5000:5000
+
+  room_server:
+    build: ./RoomServer/
+
+    command: node dist/server.js
+
+    ports:
+      - 3000:3000
+
+    depends_on:
+      - web
+
+  dungeon_master:
+    build: ./DungeonMaster/
+
+    command: python dungeon_master_app.py
+
+    ports:
+      - 4000:4000
+
+    depends_on:
+      - room_server
+
+    networks:
+      network:
+        ipv4_address: 172.25.0.11
+
+networks:
+  network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16

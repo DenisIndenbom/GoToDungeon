@@ -12,6 +12,17 @@ export type GameMessage =
     game_end: string,
 };
 
+class ConnectionError extends Error {
+    code: string;
+
+    constructor(message?: string, code?: string) {
+        super(message);  // 'Error' breaks prototype chain here
+        Object.setPrototypeOf(this, new.target.prototype);  // restore prototype chain
+        this.name = 'ConnectionError';
+        this.code = code;
+    }
+}
+
 export class API 
 {
     private address: string;
@@ -19,6 +30,21 @@ export class API
     constructor(ip: string, port: number)
     {
         this.address = `http://${ip}:${port}`;
+
+        this.test_connection();
+    }
+
+    private test_connection()
+    {
+        fetch(`${this.address}/test`, 
+        {
+            method: "post",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({text: "This is a test message!"}),
+        }).catch(error => {throw new ConnectionError(`Failed to connect to the DungeonMaster. Please check the ip or port. Used ip address: ${this.address}`, 'CONNECT_FAILED');});
     }
 
     public async create_session(id: string, genre: string, intro: string, players: Array<Player>) : Promise<string> | null

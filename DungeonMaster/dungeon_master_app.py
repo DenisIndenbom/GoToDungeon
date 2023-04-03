@@ -5,17 +5,25 @@ from flask import Flask, request
 from session_manager import SessionManager
 from flask_json import FlaskJSON, json_response
 
-os.environ["OPENAI_API_KEY"] = dotenv_values(".env")["OPENAI_API_KEY"]
+config = dotenv_values(".env")
+
+os.environ["OPENAI_API_KEY"] = config["OPENAI_API_KEY"]
 
 app = Flask(__name__)
 FlaskJSON(app)
 
 manager = SessionManager()
 
+
+@app.route('/test',  methods=['post'])
+def test():
+    return request.get_json(force=True)
+
+
 @app.route('/session', methods=['post'])
 def create_session():
     data = request.get_json(force=True)
-    
+
     try:
         s_id = data['id']
         genre = data['genre']
@@ -23,7 +31,7 @@ def create_session():
         players = data['players']
     except KeyError:
         return json_response(400)
-    
+
     res = manager.new_session(s_id, intro, genre, players)
 
     return json_response(text=res['text'])
@@ -45,4 +53,4 @@ def get_message(session_id):
     return json_response(text=res['text'], game_end=res['game_end']) if res is not None else json_response(400)
 
 
-app.run(debug=False, port=4000)
+app.run(host='0.0.0.0', port=int(config['PORT']), debug=False)
