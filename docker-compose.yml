@@ -9,6 +9,9 @@ services:
     ports:
       - 5000:5000
 
+    networks:
+      - internet
+
   dungeon_master:
     build: ./DungeonMaster/
 
@@ -18,7 +21,7 @@ services:
       - 4000:4000
 
     networks:
-      network:
+      local_network:
         ipv4_address: 172.25.0.11
 
   room_server:
@@ -33,11 +36,15 @@ services:
       - dungeon_master
 
     networks:
-      - network
+      - local_network
+      - internet
 
 networks:
-  network:
+  local_network:
     driver: bridge
+    internal: true
     ipam:
       config:
         - subnet: 172.25.0.0/16
+  internet:
+    driver: bridge
