@@ -1,6 +1,6 @@
-var socket = io("ws://localhost:3000", { transports : ['websocket'] });
+var socket = io(`ws://${room_server_address}`, { transports : ['websocket'] });
 
-const room_url = "http://localhost:5000/room/";
+const room_url = `http://${window.location.href}/room/`;
 
 socket.on('connect', function() {
     console.log("connected");
