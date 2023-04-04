@@ -1,6 +1,8 @@
 import { Message } from "../units/message";
 import { Player } from "../units/player";
 
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
 type StartMessageResponse = 
 {
     text: string
@@ -34,7 +36,7 @@ export class API
         this.test_connection();
     }
 
-    private test_connection()
+    private test_connection(attempts=3)
     {
         fetch(`${this.address}/test`, 
         {
@@ -44,7 +46,14 @@ export class API
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({text: "This is a test message!"}),
-        }).catch(error => {throw new ConnectError(`Failed to connect to the DungeonMaster. Please check the ip or port. Used ip address: ${this.address}`, 'CONNECT_FAILED');});
+        }).catch(async () => 
+            {
+                if (attempts === 0)
+                {throw new ConnectError(`Failed to connect to the DungeonMaster. Please check the ip or port. Used ip address: ${this.address}`, 'CONNECT_FAILED');}
+                
+                await sleep(1000);
+                this.test_connection(attempts-1);
+            });
     }
 
     public async create_session(id: string, genre: string, intro: string, players: Array<Player>) : Promise<string> | null

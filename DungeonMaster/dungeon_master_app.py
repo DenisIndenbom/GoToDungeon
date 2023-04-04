@@ -5,6 +5,8 @@ from flask import Flask, request
 from session_manager import SessionManager
 from flask_json import FlaskJSON, json_response
 
+from waitress import serve
+
 config = dotenv_values(".env")
 
 os.environ["OPENAI_API_KEY"] = config["OPENAI_API_KEY"]
@@ -52,5 +54,5 @@ def get_message(session_id):
 
     return json_response(text=res['text'], game_end=res['game_end']) if res is not None else json_response(400)
 
-
-app.run(host='0.0.0.0', port=int(config['PORT']), debug=False)
+if __name__ == "__main__":
+    serve(app, host=config['IP'], port=int(config['PORT']))

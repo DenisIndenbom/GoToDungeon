@@ -1,6 +1,8 @@
 from flask import Flask, render_template
 from dotenv import dotenv_values
 
+from waitress import serve
+
 config = dotenv_values(".env")
 
 port = int(config['PORT'])
@@ -20,4 +22,8 @@ def room_join(id: str):
     return render_template('one_page.html')
 
 
-app.run(host='0.0.0.0', debug=debug, port=port)
+if __name__ == "__main__":
+    if debug:
+        app.run( host='0.0.0.0', port=port, debug=debug)
+    else:
+        serve(app, host='0.0.0.0', port=port)

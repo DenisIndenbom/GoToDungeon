@@ -1,7 +1,7 @@
+waitress
 flask~=2.2.3
 flask_json
-bs4
 requests
-simple-websocket
 langchain~=0.0.126
+openai
 python-dotenv

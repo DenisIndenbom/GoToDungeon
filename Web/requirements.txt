@@ -1,3 +1,4 @@
+waitress
 flask~=2.2.3
 requests
 python-dotenv
