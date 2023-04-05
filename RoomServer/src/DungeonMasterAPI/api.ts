@@ -20,7 +20,7 @@ class ConnectError extends Error {
     constructor(message?: string, code?: string) {
         super(message);  // 'Error' breaks prototype chain here
         Object.setPrototypeOf(this, new.target.prototype);  // restore prototype chain
-        this.name = 'ConnectionError';
+        this.name = 'ConnectError';
         this.code = code;
     }
 }
@@ -52,7 +52,7 @@ export class API
                 {throw new ConnectError(`Failed to connect to the DungeonMaster. Please check the ip or port. Used ip address: ${this.address}`, 'CONNECT_FAILED');}
                 
                 await sleep(1000);
-                this.test_connection(attempts-1);
+                this.test_connection(attempts - 1);
             });
     }
 
