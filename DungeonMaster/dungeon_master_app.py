@@ -19,7 +19,7 @@ manager = SessionManager()
 
 @app.route('/test',  methods=['post'])
 def test():
-    return request.get_json(force=True)
+    return json_response(text='This is a test message!')
 
 
 @app.route('/session', methods=['post'])
@@ -53,6 +53,7 @@ def get_message(session_id):
     res = manager.message(session_id, sender, text)
 
     return json_response(text=res['text'], game_end=res['game_end']) if res is not None else json_response(400)
+
 
 if __name__ == "__main__":
     serve(app, host=config['IP'], port=int(config['PORT']))
