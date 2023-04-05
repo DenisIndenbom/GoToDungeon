@@ -18,7 +18,7 @@ services:
     command: python dungeon_master_app.py
 
     ports:
-      - 4000:4000
+      - 88:88
 
     networks:
       local_network:
@@ -30,7 +30,7 @@ services:
     command: node dist/server.js
 
     ports:
-      - 3000:3000
+      - 4000:4000
 
     depends_on:
       - dungeon_master
