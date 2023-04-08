@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, render_template
 from dotenv import dotenv_values
 
@@ -10,7 +12,7 @@ room_server_address = config['ROOM_SERVER_ADDRESS']
 port = int(config['PORT'])
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = hex(64)
+app.config['SECRET_KEY'] = os.urandom(64).hex()
 
 
 @app.route('/')
