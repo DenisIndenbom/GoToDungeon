@@ -5,3 +5,4 @@ requests
 langchain~=0.0.126
 openai
 python-dotenv
+tiktoken

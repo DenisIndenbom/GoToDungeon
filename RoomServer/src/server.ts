@@ -160,7 +160,7 @@ io.on("connection", (socket) =>
          return;
       }
 
-      socket.emit('set_cur_name', mover.name);
+      io.to(room_id).emit('set_cur_name', mover.name);
 
       for (let socket_id of Array.from(io.sockets.adapter.rooms.get(room_id)))
       {

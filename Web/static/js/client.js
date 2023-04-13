@@ -1,6 +1,6 @@
 var socket = io(`ws://${room_server_address}`, { transports : ['websocket'] });
 
-const room_url = `http://${window.location.href}/room/`;
+const room_url = `${window.location.href}/room/`;
 
 socket.on('connect', function() {
     console.log("connected");
