@@ -152,8 +152,6 @@ io.on("connection", (socket) =>
 
       let mover: Player = room.get_mover(); 
 
-      console.log(mover);
-
       if (!mover) 
       {
          io.to(room_id).emit('end_game');
