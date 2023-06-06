@@ -10,8 +10,8 @@ This project was developed at the [GoToCamp](https://goto.msk.ru/) field school.
 
 ### Launch service tutorial:
 - Clone repository (command: `git clone https://github.com/DenisIndenbom/GoToDungeon.git`)
-- Create files `.env` in the folders *DungeonMaster*, *RoomServer*, *Web* and fill them as in the files `.env_example`
 - Change directory (command: `cd GoToDungeon`)
+- Create files `.env` in the folders *DungeonMaster*, *RoomServer*, *Web* and fill them as in the files `.env_example`
 - Exectute command: `docker-compose build`
 - Exectute command: `docker-compose up`
 
