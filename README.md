@@ -7,3 +7,14 @@ This project was developed at the [GoToCamp](https://goto.msk.ru/) field school.
 
 ### Service architecture:
 <img src="./architecture.svg">
+
+### Launch service tutorial:
+- Clone repository (command: `git clone https://github.com/DenisIndenbom/GoToDungeon.git`)
+- Create files `.env` in the folders *DungeonMaster*, *RoomServer*, *Web* and fill them as in the files `.env_example`
+- Change directory (command: `cd GoToDungeon`)
+- Exectute command: `docker-compose build`
+- Exectute command: `docker-compose up`
+
+### Stop service tutorial:
+- Go to service directory
+- Exectute command: `docker-compose down` or `docker-compose stop`
