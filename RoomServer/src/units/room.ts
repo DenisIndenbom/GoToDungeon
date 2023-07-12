@@ -25,10 +25,10 @@ export class Room
     {this.running = true;}
 
     public get_players_count() : number
-    {return this.players.length}
+    {return this.players.length;}
 
     public get_players() : Array<Player> 
-    {return this.players}
+    {return this.players;}
 
     public get_player(id: string) : Player | null
     {
@@ -103,7 +103,7 @@ export class Room
     }
 
     public get_mover() : Player | null
-    {return (this.mover_index < this.players.length) ? this.players[this.mover_index] : null}
+    {return (this.mover_index < this.players.length) ? this.players[this.mover_index] : null;}
 
     public is_mover(player: Player) : boolean 
     {return this.get_mover() === player;}

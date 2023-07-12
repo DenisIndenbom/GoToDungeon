@@ -10,7 +10,7 @@ import { Message } from "./units/message";
 import { Player } from "./units/player";
 import { Room } from "./units/room";
 
-const conf = config({path: '.env'})['parsed']
+const conf = config({path: '.env'})['parsed'];
 
 const io = new Server(+conf['PORT']);
 const room_manager = new RoomManager();
@@ -42,7 +42,7 @@ io.on("connection", (socket) =>
          {
             if (socket_id === king.id) 
             {
-               let king_socket: Socket = io.sockets.sockets.get(socket_id)
+               let king_socket: Socket = io.sockets.sockets.get(socket_id);
                king_socket.data['king'] = true;
                king_socket.emit('set_king', true);
                break;
@@ -58,7 +58,7 @@ io.on("connection", (socket) =>
 
    socket.on("disconnect", () => 
    {
-      console.log(`Disconnect ${socket.id}`)
+      console.log(`Disconnect ${socket.id}`);
 
       leave_event();
    })
@@ -74,7 +74,7 @@ io.on("connection", (socket) =>
 
    socket.on("join_to_room", (room_id: string, player_name: string, player_bio: string) => 
    {
-      let player: Player = {id: socket.id, name: player_name, bio: player_bio, ready_state: false, king: socket.data['king']}
+      let player: Player = {id: socket.id, name: player_name, bio: player_bio, ready_state: false, king: socket.data['king']};
       let result: boolean = room_manager.join_to_room(room_id, player);
 
       if (!result) return;
@@ -92,7 +92,7 @@ io.on("connection", (socket) =>
    {
       if (!socket.data['king']) return;
 
-      let room_id: string = socket.data['room_id']
+      let room_id: string = socket.data['room_id'];
       let room: Room = room_manager.get_room(room_id); 
 
       if (!room || !room.check_all_ready()) return;
@@ -164,7 +164,7 @@ io.on("connection", (socket) =>
       {
          if (socket_id === mover.id) 
          {
-            let mover_socket: Socket = io.sockets.sockets.get(socket_id)
+            let mover_socket: Socket = io.sockets.sockets.get(socket_id);
             mover_socket.emit('set_cur', true);
             break;
          }
