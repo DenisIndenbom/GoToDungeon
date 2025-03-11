@@ -1,8 +1,8 @@
 waitress
-flask~=2.2.3
+flask
 flask_json
 requests
-langchain~=0.0.126
+langchain
 openai
 python-dotenv
 tiktoken
